@@ -6,24 +6,60 @@
 //
 
 import UIKit
+import WebRTC
 
 class VideoVC: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    @IBOutlet private weak var localVideoView: UIView?
+    private let webRTCClient: WebRTCClient
 
-        // Do any additional setup after loading the view.
+    init(webRTCClient: WebRTCClient) {
+        self.webRTCClient = webRTCClient
+        super.init(nibName: String(describing: VideoVC.self), bundle: Bundle.main)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    */
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let localRenderer = RTCMTLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
+        let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
+        localRenderer.videoContentMode = .scaleAspectFill
+        remoteRenderer.videoContentMode = .scaleAspectFill
+        
+
+        self.webRTCClient.startCaptureLocalVideo(renderer: localRenderer)
+        self.webRTCClient.renderRemoteVideo(to: remoteRenderer)
+        
+        if let localVideoView = self.localVideoView {
+            self.embedView(localRenderer, into: localVideoView)
+        }
+        self.embedView(remoteRenderer, into: self.view)
+        self.view.sendSubviewToBack(remoteRenderer)
+    }
+    
+    private func embedView(_ view: UIView, into containerView: UIView) {
+        containerView.addSubview(view)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|",
+                                                                    options: [],
+                                                                    metrics: nil,
+                                                                    views: ["view":view]))
+        
+        containerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|",
+                                                                    options: [],
+                                                                    metrics: nil,
+                                                                    views: ["view":view]))
+        containerView.layoutIfNeeded()
+    }
+    
+    //MARK: - backDidTap
+    @IBAction private func backDidTap(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
 
 }

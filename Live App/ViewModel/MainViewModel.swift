@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+//protocol MainViewControllerDelegate {
+//    var signalClient: SignalingClient { get }
+//    var webRTCClient: WebRTCClient { get }
+//}
+//
+//final class MainViewModel: NSObject {
+//    var signalClient: SignalingClient// = SignalingClient()
+//
+//    var webRTCClient: WebRTCClient //= WebRTCClient()
+//}
