@@ -11,9 +11,8 @@ import WebRTC
 
 class MainVC: UIViewController {
 
-    private let signalClient: SignalingClient
-    private let webRTCClient: WebRTCClient
-    private lazy var videoViewController = VideoVC(webRTCClient: self.webRTCClient)
+    private let signalClient: SignalingClient! = nil
+    private let webRTCClient: WebRTCClient! = nil
     
     @IBOutlet private weak var speakerButton: UIButton?
     @IBOutlet private weak var signalingStatusLabel: UILabel?
@@ -84,17 +83,6 @@ class MainVC: UIViewController {
             self.muteButton?.setTitle(title, for: .normal)
         }
     }
-    
-    init(signalClient: SignalingClient, webRTCClient: WebRTCClient) {
-        self.signalClient = signalClient
-        self.webRTCClient = webRTCClient
-        super.init(nibName: String(describing: MainVC.self), bundle: nil)
-    }
-    
-    @available(*, unavailable)
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,9 +95,9 @@ class MainVC: UIViewController {
         self.speakerOn = false
         self.webRTCStatusLabel?.text = "New"
         
-        self.webRTCClient.delegate = self
-        self.signalClient.delegate = self
-        self.signalClient.connect()
+//        self.webRTCClient.delegate = self
+//        self.signalClient.delegate = self
+//        self.signalClient.connect()
     }
     
     //MARK: - offerDidTap
@@ -141,7 +129,7 @@ class MainVC: UIViewController {
     
     //MARK: - videoDidTap
     @IBAction private func videoDidTap(_ sender: UIButton) {
-        self.present(videoViewController, animated: true, completion: nil)
+//        self.present(videoViewController, animated: true, completion: nil)
     }
     
     //MARK: - muteDidTap
